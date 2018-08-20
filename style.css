@@ -8,14 +8,10 @@
 
 .marquee-block {
     border: 5px dotted gold;
-    /* width: 500%; */
-    /* overflow: hidden; */
     width: 150px;
     height: 150px;
     background-color: red;
-    /* margin: 5px; */
     float: left;
-    /* text-align: center; */
 }
 
 .marquee-block span {

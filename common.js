@@ -72,14 +72,15 @@ class Marquee {
         this.blocks = this.element.querySelectorAll('.marquee-block');
         this.width = (this.blocks.length / 2) * this.blocks[0].offsetWidth;
 
-        if (this.interval && this.width <= this.element.offsetWidth) {
+        if (this.interval && (this.width <= this.element.offsetWidth)) {
             this.indent = this.interval + (this.element.offsetWidth - this.width);
         }
 
-        if (!this.interval && this.width <= this.element.offsetWidth) {
+        if (!this.interval && (this.width <= this.element.offsetWidth)) {
             this.indent = this.element.offsetWidth - this.width;
+        } else {
+            this.indent = 0;
         }
-
     }
 
     [_assemblyContainer]() {
@@ -94,7 +95,7 @@ class Marquee {
 
         if (this.direction == 'right') {
             this.duplicate.style.left = '100%';
-            this.duplicate.style.marginLeft = `${this.indent}px`;
+            // this.duplicate.style.marginLeft = `${this.indent}px`;
         }
         else if (this.direction == 'left') {
             this.duplicate.style.right = '100%';
@@ -174,9 +175,6 @@ class Marquee {
         } else if (e.type == 'resize' && e.isTrusted) {
             this[_setDimensions]();
             this.element.children[0].lastElementChild.style.marginRight = `${this.indent}px`;
-            // this.element.children[0].lastElementChild.style.marginLeft = `${this.indent}px`;
-
-
         }
     }
 
