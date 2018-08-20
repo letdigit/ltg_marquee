@@ -2,7 +2,7 @@
 
 const _checkOptions          = Symbol('checkOptions');
 const _createMarquee         = Symbol('createMarquee');
-const _setDimensions         = Symbol('setDimensions');
+const _computeDimensions     = Symbol('computeDimensions');
 const _assemblyContainer     = Symbol('assemblyContainer');
 const _makeClone             = Symbol('makeClone');
 const _wrap                  = Symbol('wrap');
@@ -43,8 +43,8 @@ class Marquee {
             this.errors.push(message)
         }
 
-        if (typeof this.interval != 'number' || this.interval > 5000) {
-            let message = "Maximum interval is: 5s.";
+        if (typeof this.interval != 'string') {
+            let message = "Interval can be only: double, full, half or quarter";
             this.errors.push(message)
         }
 
@@ -58,7 +58,7 @@ class Marquee {
     }
 
     [_createMarquee]() {
-        this[_setDimensions]();
+        this[_computeDimensions]();
         this[_assemblyContainer]();
         this[_makeClone]();
         this[_wrap]();
@@ -68,16 +68,31 @@ class Marquee {
 
 
     // Setup methods
-    [_setDimensions]() {
+    [_computeDimensions]() {
         this.blocks = this.element.querySelectorAll('.marquee-block');
-        this.width = (this.blocks.length / 2) * this.blocks[0].offsetWidth;
+        this.element_width =  this.element.offsetWidth
+        this.marquee_width = (this.blocks.length / 2) * this.blocks[0].offsetWidth;
 
-        if (this.interval && (this.width <= this.element.offsetWidth)) {
-            this.indent = this.interval + (this.element.offsetWidth - this.width);
+        if (this.interval && (this.marquee_width <= this.element_width)) {
+            switch(this.interval) {
+                case 'double':
+                    this.indent = (this.element_width * 2);
+                    break;
+                case 'full':
+                    this.indent = this.element_width;
+                    break;
+                case 'half':
+                    this.indent = this.element_width / 2;
+                    break;
+                case 'quarter':
+                    this.indent = this.element_width / 4;
+                    break;
+                default:
+                    this.indent = 0;
+            }
         }
-
-        if (!this.interval && (this.width <= this.element.offsetWidth)) {
-            this.indent = this.element.offsetWidth - this.width;
+        else if (!this.interval && (this.marquee_width <= this.element_width)) {
+            this.indent = this.element_width - this.marquee_width;
         } else {
             this.indent = 0;
         }
@@ -87,7 +102,7 @@ class Marquee {
         this.container = document.createElement('div');
         this.container.innerHTML = this.element.innerHTML;
         this.container.style.cssText = "display: block; position: absolute; overflow: hidden;";
-        this.container.style.width = `${this.width * 2}px`;
+        this.container.style.width = `${this.marquee_width * 2}px`;
     }
 
     [_makeClone]() {
@@ -173,7 +188,7 @@ class Marquee {
             this.wrapper.parentNode.classList.add('running');
             this.wrapper.parentNode.classList.remove('paused');
         } else if (e.type == 'resize' && e.isTrusted) {
-            this[_setDimensions]();
+            this[_computeDimensions]();
             this.element.children[0].lastElementChild.style.marginRight = `${this.indent}px`;
         }
     }
@@ -205,9 +220,9 @@ class Marquee {
 
 var marquee = new Marquee({
     elementClass: 'marquee',
-    // speed: 20,
+    speed: 3,
     // direction: 'right',
-    // interval: 9000
+    interval: 'double',
 });
 
 marquee.start();
