@@ -43,7 +43,7 @@ class Marquee {
             this.errors.push(message)
         }
 
-        if (typeof this.interval != 'string') {
+        if (typeof this.interval != 'string' && this.interval != 0) {
             let message = "Interval can be only: double, full, half or quarter";
             this.errors.push(message)
         }
@@ -222,7 +222,7 @@ var marquee = new Marquee({
     elementClass: 'marquee',
     speed: 3,
     // direction: 'right',
-    interval: 'double',
+    // interval: 'double',
 });
 
 marquee.start();
